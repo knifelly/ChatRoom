@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		.do{
+			position:fixed;
+			bottom:0;left:0;
+			height:50px;
+			background-color:#b1ff00;
+			width:100%;
+			text-align: center;
+			padding-top:25px;
+		}
+		.do input{
+			font-size:20px;
+		}
+		.do input[type="text"]{
+			width:80%;
+		}
+	</style>
+</head>
+<body>
+	<h1>小小聊天室<span id="user"><%=username%></span></h1>
+	<div>
+		<ul id="list">
+			
+		</ul>
+	</div>
+	<div class="do">
+		发言框：<input type="text" id="talk" name="talk"/>
+		<!-- <input type="button" id="btn" value="发言"> -->
+	</div>
+</body>
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<script>
+	var socket = io();
+	var content=document.getElementById("talk");
+	var oUl=document.getElementById("list");
+	var oUser=document.getElementById("user");
+	content.onkeydown=function(e){
+		if(e.keyCode == 13){
+			socket.emit("dialog",{
+			"content" : content.value,
+			"user"    : oUser.innerText
+		});
+			this.value="";
+		}
+	}
+	socket.on("dialog",function(msg){
+		//console.log(oUl);
+		oUl.innerHTML+="<li><b>"+msg.user+"说：</b>"+ msg.content +"</li>";
+	});
+</script>
+</html>
